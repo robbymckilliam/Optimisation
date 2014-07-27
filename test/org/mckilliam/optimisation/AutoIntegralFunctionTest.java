@@ -39,8 +39,6 @@ public class AutoIntegralFunctionTest {
     @Test
     public void testIntegral() {
         System.out.println("integral");
-        double[] min = null;
-        double[] max = null;
         
         //check that a constant function integrates correctly.
         AutoIntegralFunction instance = new AutoIntegralFunction() {
