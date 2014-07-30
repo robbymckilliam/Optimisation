@@ -1,8 +1,7 @@
 package org.mckilliam.optimisation;
 
 import Jama.Matrix;
-import flanagan.integration.IntegralFunction;
-import flanagan.integration.Integration;
+import pubsim.Integration;
 import pubsim.VectorFunctions;
 
 /**
@@ -14,7 +13,7 @@ public abstract class AutoIntegralFunction implements FunctionAndIntegral {
     protected final int INTSTEPS;
 
     /** Default number of steps for the integral is 1000 */
-    public AutoIntegralFunction(){ INTSTEPS = 1000; };
+    public AutoIntegralFunction(){ INTSTEPS = 2000; };
 
     /** Set the number of steps for the integral */
     public AutoIntegralFunction(int intsteps){
@@ -33,8 +32,8 @@ public abstract class AutoIntegralFunction implements FunctionAndIntegral {
             System.arraycopy(min, 1, minl, 0, minl.length);
             System.arraycopy(max, 1, maxl, 0, maxl.length);
 
-            intval = (new Integration(new IntegralFunction() {
-                        public double function(double x) {
+            intval = (new Integration() {
+                        public double f(double x) {
                             final double xf = x;
                             double val = (new AutoIntegralFunction(INTSTEPS) {
                                 public double value(Matrix mat) {
@@ -43,14 +42,14 @@ public abstract class AutoIntegralFunction implements FunctionAndIntegral {
                             }).integral(minl, maxl);
                             return val;
                         }
-                    }, min[0], max[0])).gaussQuad(INTSTEPS);
+                    }).trapezoid(min[0], max[0], INTSTEPS);
         }else{
-            intval = (new Integration(new IntegralFunction() {
-                        public double function(double x) {
+            intval = (new Integration() {
+                        public double f(double x) {
                             Matrix mat = new Matrix(1,1); mat.set(0,0,x);
                             return value(mat);
                         }
-                    }, min[0], max[0])).gaussQuad(INTSTEPS);
+                    }).trapezoid(min[0], max[0], INTSTEPS);
         }
         return intval;
     }
